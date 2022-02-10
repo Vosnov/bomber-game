@@ -67,6 +67,7 @@ const config: Configuration & Record<string, any> = {
           from: '**/*',
           context: path.resolve(__dirname, 'src', 'assets'),
           to: './assets',
+          noErrorOnMissing: true,
         },
       ],
     }),

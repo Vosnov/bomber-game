@@ -115,9 +115,7 @@
         "@typescript-eslint/no-invalid-this": [
           "warn"
         ],
-        "@typescript-eslint/explicit-function-return-type": [
-          "error"
-        ]
+        "@typescript-eslint/explicit-function-return-type": "off"
       }
     }
   ]
