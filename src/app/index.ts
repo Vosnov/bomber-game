@@ -19,7 +19,7 @@ const start = () => {
   if (!ctx) return
   if (!canvas) return
   player.speed = 10
-  player.x = 80
+  player.x = 90
   player.y = 80
   player.w = 60
   player.h = anim.height
@@ -73,6 +73,6 @@ window.addEventListener('keyup', (e) => {
   }
 
   if (keysSet.size === 0) {
-    player.selectMoveState(MoveState.Stay)
+    player.shouldStop = true
   }
 })
