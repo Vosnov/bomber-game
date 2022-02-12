@@ -59,16 +59,5 @@ export class Game {
         this.player.selectMoveState(MoveState.MoveTop)
       }
     })
-    window.addEventListener('keyup', (e) => {
-      const keys = ['d', 'a', 's', 'w']
-
-      if (keys.includes(e.key)) {
-        keysSet.delete(e.key)
-      }
-
-      if (keysSet.size === 0) {
-        this.player.shouldStop = true
-      }
-    })
   }
 }
