@@ -1,51 +1,60 @@
+import { createImage } from "../utils/createImage"
 import { Terrain } from "./Terrain"
 
-const map = [
-  '####################',
-  '#..................#',
-  '#......###.........#',
-  '#.......#..........#',
-  '#......###.........#',
-  '#..................#',
-  '####################'
-]
-
-export type TerrainItems = Record<string, Terrain>
+const sprite = createImage('../assets/images/terrain.png')
 
 export class TerrainGenerator {
-  items?: TerrainItems
+  items: Map<string, Terrain>
   bgColor: string
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement | null
+  map: string[]
 
-  constructor(items: TerrainItems, canvas: HTMLCanvasElement, bgColor: string) {
-    this.items = items
+  constructor(canvas: HTMLCanvasElement | null, bgColor: string, map: string[]) {
     this.bgColor = bgColor
     this.canvas = canvas
+    this.map = map
+
+    this.items = new Map<string, Terrain>()
+    this.fillItems()
+  }
+
+  fillItems() {
+    let x = 0
+    let y = 0
+    let count = 0
+
+    this.map.forEach(col => {
+
+      col.split('').forEach(row => {
+        if (row === '#') {
+          const block = new Terrain()
+          block.sprite = sprite
+          block.w = 80
+          block.h = 80
+          block.x = x * block.w
+          block.y = y * block.h
+          count += 1
+          this.items.set(`t${count}`, block)
+        }
+
+        x += 1
+      })
+
+      x = 0
+      y += 1
+    })
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    let x = 0;
-    let y = 0;
+    if (!this.canvas) return
 
     ctx.beginPath()
     ctx.fillStyle = this.bgColor
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
     ctx.closePath()
 
-    map.forEach(col => {
-
-      col.split('').forEach(row => {
-        const block = this.items?.[row]
-        if (block) {
-          block.x = x * block.w
-          block.y = y * block.h
-          block.draw(ctx)
-        }
-        x += 1
-      })
-
-      x = 0
-      y += 1
+    this.items.forEach(item => {
+      item.draw(ctx)
     })
   }
 }

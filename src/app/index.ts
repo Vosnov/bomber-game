@@ -1,5 +1,5 @@
-import { MovedEntity, MoveState } from "../models/MovedEntity";
-import { Terrain } from "../models/Terrain";
+import { Game } from "../models/Game";
+import { MovedEntity } from "../models/MovedEntity";
 import { TerrainGenerator } from "../models/TerrainGenerator";
 import { createImage } from "../utils/createImage";
 
@@ -10,69 +10,34 @@ if (canvas) {
   canvas. height = 560
 }
 
-const ctx = canvas?.getContext('2d');
-const anim = new Image();
-anim.src = './assets/images/player_walk_right.png';
+const map = [
+  '####################',
+  '#..................#',
+  '#......###.........#',
+  '#.......#..........#',
+  '#......###.........#',
+  '#..................#',
+  '####################'
+]
+
 const player = new MovedEntity();
 
-const start = () => {
-  if (!ctx) return
-  if (!canvas) return
-  player.speed = 10
-  player.x = 90
-  player.y = 80
-  player.w = 60
-  player.h = anim.height
-  player.spriteRight = createImage('../assets/images/player_walk_right.png')
-  player.spriteLeft = createImage('../assets/images/player_walk_left.png')
-  player.spriteTop = createImage('../assets/images/player_walk_top.png')
-  player.spriteBottom = createImage('../assets/images/player_walk_bottom.png')
-  console.log(player)
-  player.draw(ctx)
+player.speed = 10
+player.x = 90
+player.y = 80
+player.w = 60
+player.h = 80
+player.spriteRight = createImage('../assets/images/player_walk_right.png')
+player.spriteLeft = createImage('../assets/images/player_walk_left.png')
+player.spriteTop = createImage('../assets/images/player_walk_top.png')
+player.spriteBottom = createImage('../assets/images/player_walk_bottom.png')
 
-  const terrain = new Terrain()
-  terrain.sprite = createImage('../assets/images/terrain.png')
-  terrain.w = 80
-  terrain.h = 80
-  const terrainGenerator = new TerrainGenerator({'#': terrain}, canvas, '#55960e')
+const terrainGenerator = new TerrainGenerator(canvas, '#55960e', map)
 
-
-  setInterval(() => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    terrainGenerator.draw(ctx)
-    player.move()
-    player.draw(ctx)
-  }, 1000 / 6)
-}
-start()
-
-const keysSet = new Set()
-window.addEventListener('keypress', (e) => {
-  if (e.key === 'd') {
-    keysSet.add(e.key)
-    player.selectMoveState(MoveState.MoveRight)
-  }
-  if (e.key === 'a') {
-    keysSet.add(e.key)
-    player.selectMoveState(MoveState.MoveLeft)
-  }
-  if (e.key === 's') {
-    keysSet.add(e.key)
-    player.selectMoveState(MoveState.MoveBottom)
-  }
-  if (e.key === 'w') {
-    keysSet.add(e.key)
-    player.selectMoveState(MoveState.MoveTop)
-  }
+const game = new Game({
+  canvas,
+  player,
+  terrainGenerator,
 })
-window.addEventListener('keyup', (e) => {
-  const keys = ['d', 'a', 's', 'w']
 
-  if (keys.includes(e.key)) {
-    keysSet.delete(e.key)
-  }
-
-  if (keysSet.size === 0) {
-    player.shouldStop = true
-  }
-})
+game.start()
